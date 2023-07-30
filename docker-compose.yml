@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: always
+    environment:
+      DOMAIN: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
+      VIRTUAL_HOST: ${VIRTUAL_HOST}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      SIGNUPS_ALLOWED: ${SIGNUPS_ALLOWED}
+      INVITATIONS_ALLOWED: ${INVITATIONS_ALLOWED}
+      INVITATION_ORG_NAME: ${INVITATION_ORG_NAME}
+      ADMIN_SESSION_LIFETIME: ${ADMIN_SESSION_LIFETIME}
+      DUO_IKEY: ${DUO_IKEY}
+      DUO_SKEY: ${DUO_SKEY}
+      DUO_HOST: ${DUO_HOST}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME}
+      SMTP_SECURITY: ${SMTP_SECURITY}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_AUTH_MECHANISM: ${SMTP_AUTH_MECHANISM}
+    volumes:
+      - /vw-data:/data
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: always
+    ports:
+      - 80:80  # Needed for the ACME HTTP-01 challenge.
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy-config:/config
+      - ./caddy-data:/data
+    environment:
+      DOMAIN: ${LETSENCRYPT_HOST}  # Your domain.
+      EMAIL: ${LETSENCRYPT_EMAIL}              # The email address to use for ACME registration.
+      LOG_FILE: "/data/access.log"
