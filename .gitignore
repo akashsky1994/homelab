@@ -2,3 +2,8 @@ caddy-data
 caddy-config
 vw-data
 .env
+terraform-deployment/*.tfstate
+terraform-deployment/*.tfplan
+terraform-deployment/terraform.tfstate.backup
+terraform-deployment/.terraform*
+terraform-deployment/vw_ssh_key
