@@ -40,4 +40,5 @@ variable "pvt_key" {
     description = "prviate ssh key path"
     type = string
     sensitive = true
+    default= "~/.ssh/id_rsa.pub"
 }

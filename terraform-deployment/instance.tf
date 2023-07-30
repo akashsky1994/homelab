@@ -1,12 +1,17 @@
-resource "aws_key_pair" "ssh_key" {
-  key_name   = "ssh_key"
-  public_key = file(var.pvt_key)
+# resource "aws_key_pair" "vw_ssh_key" {
+#   key_name   = "ssh_key"
+#   public_key = file("~/.ssh/id_rsa.pub")
+# }
+
+data "aws_key_pair" "vw_ssh_key" {
+  key_name           = "vaultwarden"
+  include_public_key = true
 }
 
 resource "aws_instance" "vaultwarden_ec2" {
   ami           = var.aws_ami_id
   instance_type = var.instance_type
-  key_name      = aws_key_pair.ssh_key.key_name
+  key_name      = data.aws_key_pair.vw_ssh_key.key_name
 
   tags = {
     Name = var.nametag
@@ -15,7 +20,7 @@ resource "aws_instance" "vaultwarden_ec2" {
     host = self.public_ip
     user = "ubuntu"
     type = "ssh"
-    private_key = file(var.pvt_key)
+    private_key = file("~/.ssh/vaultwarden.pem")
     timeout = "2m"
   }
   
@@ -40,7 +45,7 @@ resource "aws_instance" "vaultwarden_ec2" {
 
 resource "aws_eip" "vw_eip" {
   instance = aws_instance.vaultwarden_ec2.id
-  vpc      = true
+  domain = "vpc"
 }
 
 #Associate EIP with EC2 Instance
