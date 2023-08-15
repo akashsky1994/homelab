@@ -8,3 +8,4 @@
 */terraform-deployment/.terraform*
 */terraform-deployment/vw_ssh_key
 nextcloud-setup
+nextcloud/caddy/*
