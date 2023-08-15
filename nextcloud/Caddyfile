@@ -1,0 +1,15 @@
+
+${DOMAIN}:443 {
+    log {
+        level INFO
+        output file {$LOG_FILE} {
+            roll_size 10MB
+            roll_keep 10
+        }
+    }
+    # Use the ACME HTTP-01 challenge to get a cert for the configured domain.
+    tls {$EMAIL}
+    
+    header Strict-Transport-Security max-age=31536000;
+    reverse_proxy https://localhost:8080
+}
