@@ -66,5 +66,50 @@ services:
     restart: always
     command: ["postgres", "-c" ,"shared_preload_libraries=vectors.so", "-c", 'search_path="$$user", public, vectors', "-c", "logging_collector=on", "-c", "max_wal_size=2GB", "-c", "shared_buffers=512MB", "-c", "wal_compression=on"]
 
+  # immich-prometheus:
+  #   container_name: immich_prometheus
+  #   restart: unless-stopped
+  #   ports:
+  #     # this exposes the default port for Prometheus so you can interact with it
+  #     - 9090:9090
+  #   image: prom/prometheus
+  #   volumes:
+  #     # the Prometheus configuration file - a barebones one is provided to get started
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #     # a named volume defined in the bottom of the Compose file; it can also be a mounted folder
+  #     - prometheus-data:/prometheus
+
+  # immich-grafana:
+  #   container_name: immich_grafana
+  #   restart: unless-stopped
+  #   command: ['./run.sh', '-disable-reporting'] # this is to disable Grafana's telemetry
+  #   ports:
+  #     - 3000:3000
+  #   image: grafana/grafana
+  #   volumes:
+  #     # stores your pretty dashboards and panels
+  #     - grafana-data:/var/lib/grafana
+
+  # backup:
+  #   container_name: immich_db_dumper
+  #   image: prodrigestivill/postgres-backup-local:14
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     POSTGRES_HOST: database
+  #     POSTGRES_CLUSTER: 'TRUE'
+  #     POSTGRES_USER: ${DB_USERNAME}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_DB: ${DB_DATABASE_NAME}
+  #     SCHEDULE: "@daily"
+  #     POSTGRES_EXTRA_OPTS: '--clean --if-exists'
+  #     BACKUP_DIR: ${BACKUP_DIR}
+  #   volumes:
+  #     - ./db_dumps:/db_dumps
+  #   depends_on:
+  #     - database
+  
 volumes:
   model-cache:
+  prometheus-data:
+  grafana-data:
