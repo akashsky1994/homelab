@@ -1,0 +1,19 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin-homelab
+    user: ${UID}:${GID}
+    network_mode: 'host'
+    volumes:
+      - ${DATADIR}/config:/config
+      - ${DATADIR}/cache:/cache
+      - type: bind
+        source: ${DATADIR}/media
+        target: /media
+    restart: 'unless-stopped'
+    # Optional - alternative address used for autodiscovery
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://192.168.1.157
+    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
