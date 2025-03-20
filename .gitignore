@@ -9,3 +9,7 @@
 */terraform-deployment/vw_ssh_key
 nextcloud-setup
 nextcloud/caddy/*
+
+adguard/conf/AdGuardHome.yaml
+jellyfin/config/*
+jellyfin/cache/*
